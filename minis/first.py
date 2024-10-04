@@ -1,31 +1,26 @@
-
-
+import pytest
 
 def bit_count(number: int) -> int:
 	res = 0
+	negative = False
 
-	if number > 0:
-		while number > 0:
-			res += number & 1
-			number >>= 1
-	elif number < 0:
+	if number < 0:
 		res += 1
 		number = abs(number)
-		q = number
+		negative = True
 
-		c = 0
-		while q > 0:
-			c += 1
-			q >>= 1
+	number -= negative
 
-		number -= 1
-
-
-		for i in range(c):
-			res += (number & 1) ^ 1
-			number >>= 1
+	while number > 0:
+		res += (number & 1) ^ negative
+		number >>= 1
 
 	return res
 
 
-print(bit_count(int(input("Enter number -> "))))
+# print(bit_count(int(input("Enter number -> "))))
+
+# 123 -> 0b1111011, -123 -> 1b0000101, -4 -> 1b00
+@pytest.mark.parametrize("i, o", [[123, 6], [-123, 3], [10, 2], [-4, 1]])
+def test(i, o):
+	assert bit_count(i) == o
