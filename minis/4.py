@@ -20,7 +20,9 @@ def reverse_dict(hashtable: dict) -> dict:
 	return result
 
 
-@pytest.mark.parametrize("i, o", [({"Ivanov": 97832, "Petrov": 55521, "Kuznecov": 97832}, {97832: ("Ivanov", "Kuznecov"), 55521: "Petrov"})])
+@pytest.mark.parametrize("i, o", [({"Ivanov": 97832, "Petrov": 55521, "Kuznecov": 97832}, {97832: ("Ivanov", "Kuznecov"), 55521: "Petrov"}),
+								  ({"Hello":(1, 2, 3), "popopo":(3, 2, 1), "razor":(1, 2, 3)}, {(1, 2, 3):("Hello", "razor"), (3, 2, 1):"popopo"}),
+								  ({1:1, 2:2}, {1:1, 2:2})])
 def test(i, o):
 	assert reverse_dict(i) == o
 
