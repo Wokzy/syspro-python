@@ -4,10 +4,6 @@ import pytest
 def specialize(function, *args, **kwargs):
 
 	def _res(*new_args, **new_kwargs):
-		for k in new_kwargs.keys():
-			if k in kwargs.keys():
-				raise TypeError(f"function specialized on {function.__name__} doesn't take positional argument {k}")
-
 		return function(*args, *new_args, **kwargs, **new_kwargs)
 
 	return _res
