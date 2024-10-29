@@ -17,11 +17,8 @@ def foo_test_2(a, b):
 
 
 def test_exception():
-	try:
-		specialize(foo_test_1, k=3)(k=3)# TypeError
-		assert False, "No exception"
-	except Exception as e:
-		assert isinstance(e, TypeError)
+	with pytest.raises(TypeError):
+		specialize(foo_test_1, k=3)(k=3)
 
 def test_1():
 	assert specialize(foo_test_2, 1, 2)() == (2, 1)
