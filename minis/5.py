@@ -1,4 +1,5 @@
 
+import pytest
 
 def specialize(function, *args, **kwargs):
 
@@ -7,27 +8,27 @@ def specialize(function, *args, **kwargs):
 			if k in kwargs.keys():
 				raise TypeError(f"function specialized on {function.__name__} doesn't take positional argument {k}")
 
-		function(*args, *new_args, **kwargs, **new_kwargs)
+		return function(*args, *new_args, **kwargs, **new_kwargs)
 
 	return _res
 
 
 def foo_test_1(k):
-	print(k)
+	return k
 
 def foo_test_2(a, b):
-	print(a, b)
+	return b, a
 
 
-def test():
+def test_exception():
 	try:
-		specialize(foo_test_1, k=3)(k=4) # TypeError
-	except TypeError as e:
-		print(f"TypeError: {e}")
+		specialize(foo_test_1, k=3)(k=3)# TypeError
+		assert False, "No exception"
+	except Exception as e:
+		assert isinstance(e, TypeError)
 
-	specialize(foo_test_2, 1, 2)()   # -> 1, 2
-	specialize(foo_test_2, b=2)(10)  # -> 10, 2
+def test_1():
+	assert specialize(foo_test_2, 1, 2)() == (2, 1)
 
-
-if __name__ == "__main__":
-	test()
+def test_2():
+	assert specialize(foo_test_2, b=1)(10) == (1, 10)
