@@ -1,4 +1,6 @@
 
+from functools import wraps
+
 def specialize(function, *args, **kwargs):
 
 	def _res(*new_args, **new_kwargs):
@@ -12,6 +14,7 @@ def deprecated(function = None, *, since:str = '', will_be_removed:str = ''):
 	if function is None:
 		return specialize(deprecated, since=since, will_be_removed=will_be_removed)
 
+	@wraps(function)
 	def inner(*args, **kwargs):
 		depr_string = f'Warning: function {function.__name__} is deprecated'
 		if since and will_be_removed:
