@@ -1,22 +1,22 @@
 
 from functools import wraps
 
-def specialize(function, *args, **kwargs):
+def специализировать(функция, *арги, **кварги):
 
-	def _res(*new_args, **new_kwargs):
-		return function(*args, *new_args, **kwargs, **new_kwargs)
+	def _результат(*новые_арги, **новые_кварги):
+		return функция(*арги, *новые_арги, **кварги, **новые_кварги)
 
-	return _res
+	return _результат
 
 
-def deprecated(function = None, *, since:str = '', will_be_removed:str = ''):
+def deprecated(функция = None, *, since:str = '', will_be_removed:str = ''):
 
-	if function is None:
-		return specialize(deprecated, since=since, will_be_removed=will_be_removed)
+	if функция is None:
+		return специализировать(deprecated, since=since, will_be_removed=will_be_removed)
 
-	@wraps(function)
+	@wraps(функция)
 	def inner(*args, **kwargs):
-		depr_string = f'Warning: function {function.__name__} is deprecated'
+		depr_string = f'Warning: function {функция.__name__} is deprecated'
 		if since and will_be_removed:
 			print(f"{depr_string} since version {since}. It will be removed in version {will_be_removed}")
 		elif will_be_removed:
@@ -26,7 +26,7 @@ def deprecated(function = None, *, since:str = '', will_be_removed:str = ''):
 		else:
 			print(f"{depr_string}. It will be removed in future versions.")
 
-		function(*args, **kwargs)
+		функция(*args, **kwargs)
 
 	return inner
 
