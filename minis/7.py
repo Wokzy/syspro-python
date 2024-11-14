@@ -17,14 +17,17 @@ def deprecated(функция = None, *, since:str = '', will_be_removed:str = '
 	@wraps(функция)
 	def inner(*args, **kwargs):
 		depr_string = f'Warning: function {функция.__name__} is deprecated'
-		if since and will_be_removed:
-			print(f"{depr_string} since version {since}. It will be removed in version {will_be_removed}")
-		elif will_be_removed:
-			print(f"{depr_string}. It will be removed in version {will_be_removed}")
-		elif since:
-			print(f"{depr_string} since version {since}. It will be removed in future versions")
+
+		if since:
+			depr_string += f' since version {since}'
+		depr_string += '. It will be removed in '
+
+		if will_be_removed:
+			depr_string += f'version {will_be_removed}.'
 		else:
-			print(f"{depr_string}. It will be removed in future versions.")
+			depr_string += 'future versions.'
+
+		print(depr_string)
 
 		функция(*args, **kwargs)
 
