@@ -1,39 +1,50 @@
 
 def cycle(iterable):
-	it = iterable.__iter__()
 
 	while True:
+		for i in iterable:
+			yield i
+
+
+class chain:
+	def __init__(self, *args):
+		self.args = args
+
+	def __iter__(self):
+		self.current = 0
+		self.iterator = self.args[0].__iter__()
+		return self
+
+	def __next__(self):
 		try:
-			yield it.__next__()
+			return self.iterator.__next__()
 		except StopIteration:
-			it = iterable.__iter__()
+			self.current += 1
+			if self.current >= len(self.args):
+				raise StopIteration
+
+			self.iterator = self.args[self.current].__iter__()
+			return self.__next__()
 
 
-def chain(*args):
 
-	for current in cycle(args):
-		it = current.__iter__()
-		while True:
-			try:
-				yield it.__next__()
-			except StopIteration:
-				break
+# def chain(*args):
+
+# 	for current in args:
+# 		for i in current:
+# 			yield i
+
 
 
 def test():
 	br = 100
-	for i in cycle([1, 2, 3]):
+	for i in cycle(chain([1, 2, 3], 'ab', 'qqqq')):
 		if br <= 0:
 			break
 		print(i)
 		br -= 1
 
-	br = 100
-	for i in chain([1, 2, 3], ['a', 'b']):
-		if br <= 0:
-			break
-		print(i)
-		br -= 1
+	print(list(chain([1, 2, 3], ['a', 'b'])))
 
 if __name__ == '__main__':
 	test()
