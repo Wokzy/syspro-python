@@ -38,8 +38,6 @@ class LRUCache:
 			if len(self.heap) > 1:
 				heapq._siftdown(self.heap, 0, len(self.heap) - 1)
 			return self.mapping[name].value
-		else:
-			return
 
 
 	def put(self, name, value):

@@ -1,6 +1,8 @@
 
 def cycle(iterable):
 	while True:
+		# for i in iterable:
+		# 	yield i
 		yield from iterable
 
 
@@ -29,7 +31,9 @@ class chain:
 # def chain(*args):
 
 # 	for current in args:
-# 		yield from current
+# 		for c in current:
+# 			yield c
+		# yield from current
 
 
 
