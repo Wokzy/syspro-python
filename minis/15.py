@@ -2,16 +2,19 @@
 import copy
 import threading
 
+NUMBER_OF_THREADS = 8
+
+global task_queue, thread_lock
+task_queue = []
+thread_lock = threading.Lock()
 
 class Consumer(threading.Thread):
-	def __init__(self, size: int, value: int, times: int):
+	def __init__(self):
 		super().__init__(daemon=True)
 
-		self.size = size
-		self.value = value
-		self.times = times
-
-		self.result = None
+		self.size = 0
+		self.value = 0
+		self.times = 0
 
 
 	def matrix_mul(self, first: list[int], second: list[int]) -> list[int]:
@@ -26,25 +29,34 @@ class Consumer(threading.Thread):
 
 
 	def run(self) -> None:
+		global task_queue, thread_lock
 
-		matrix = [[self.value ** (i + j) for j in range(self.size)] for i in range(self.size)]
-		cache = copy.deepcopy(matrix)
-		for i in range(self.times):
-			matrix = self.matrix_mul(matrix, cache)
+		while True:
+			with thread_lock:
+				if not len(task_queue):
+					return
 
-		self.result = sum([sum(i) for i in matrix])
+				self.size, self.value, self.times = task_queue.pop(0)
+
+			matrix = [[self.value ** (i + j) for j in range(self.size)] for i in range(self.size)]
+			cache = copy.deepcopy(matrix)
+			for i in range(self.times):
+				matrix = self.matrix_mul(matrix, cache)
+
+			print(sum([sum(i) for i in matrix]))
 
 
-task_queue = []
 for i in range(40, 60):
-	task_queue.append(Consumer(size=i, value=2, times=25))
-	task_queue[-1].start()
+	task_queue.append((i, 2, 25))
 
-for task in task_queue:
-	if task.is_alive():
-		task.join()
+threads = [Consumer() for i in range(NUMBER_OF_THREADS)]
 
-	print(task.result)
+for tr in threads:
+	tr.start()
 
-# 11.8 seconds on python3.12.3 with gil
-# 2.6 seconds on python3.13.1 no-gil
+for tr in threads:
+	if tr.is_alive():
+		tr.join()
+
+# 11.3 seconds on python3.12.3 with gil
+# 2.45 seconds on python3.13.1 no-gil
